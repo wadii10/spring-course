@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Compte Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Include Navbar -->
+<div th:insert="~{fragments/navbar.html :: navbar}"></div>
+
+<div class="container mt-5">
+    <h1 class="text-center">Compte Management</h1>
+    <!-- Add New Compte Form -->
+    <div class="mb-4">
+        <h2>Add New Compte</h2>
+        <form th:action="@{add-compte}" method="post">
+            <div class="mb-3">
+                <label for="nomClient" class="form-label">Name</label>
+                <input type="text" class="form-control" id="nomClient" name="nomClient" placeholder="Enter Name" required>
+            </div>
+            <div class="mb-3">
+                <label for="solde" class="form-label">Solde</label>
+                <input type="number" class="form-control" id="solde" name="solde" placeholder="Enter Solde" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Compte</button>
+        </form>
+    </div>
+
+    <!-- List of Comptes -->
+    <div>
+        <h2>List of Comptes</h2>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>RIB</th>
+                <th>Name</th>
+                <th>Solde</th>
+                <th>Delete</th>
+                <th>Delete (AJAX)</th>
+                <th>Edit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="compte : ${comptes}">
+                <td th:text="${compte.rib}"></td>
+                <td th:text="${compte.nomClient}"></td>
+                <td th:text="${compte.solde}"></td>
+                <td>
+                    <form th:action="@{/comptes/delete-compte}" method="post" >
+                        <input type="hidden" name="rib" th:value="${compte.rib}" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+                <td>
+                    <button class="btn btn-warning" th:onclick="|deleteCompteAjax(${compte.rib})|">Delete (AJAX)</button>
+                </td>
+                <td>
+                    <button class="btn btn-info" th:onclick="|editCompte(${compte.rib})|">Edit</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Edit Compte Modal -->
+<div class="modal fade" id="editCompteModal" tabindex="-1" aria-labelledby="editCompteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCompteModalLabel">Edit Compte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCompteForm">
+                    <input type="hidden" id="editRib" name="rib" />
+                    <div class="mb-3">
+                        <label for="editNomClient" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editNomClient" name="nomClient" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSolde" class="form-label">Solde</label>
+                        <input type="number" class="form-control" id="editSolde" name="solde" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveCompteBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/comptes.js"></script>
+</body>
+</html>
